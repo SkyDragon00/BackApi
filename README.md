@@ -1,5 +1,7 @@
 De mi para mi
 
+npm start
+
 Ir a thunder, se pone request, POST para agregar y GET para ver
 
 Se pone http://localhost:8000/api/users y luego en body SEND
