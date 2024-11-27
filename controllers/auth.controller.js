@@ -34,7 +34,7 @@ const login = async (req, res = response) => {
                 id: user.id,
                 name: user.name,
                 email: user.email,
-                role: user.roleId, // Asegúrate de que estás enviando el roleId
+                role: user.roleId,
             },
             token
         });

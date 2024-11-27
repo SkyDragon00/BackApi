@@ -26,6 +26,16 @@ const Game = sequelize.define('Game', {
         type: DataTypes.FLOAT,
         allowNull: false,
     },
+    tags: {
+        type: DataTypes.STRING,
+        allowNull: true, // Optional field
+        get() {
+            return this.getDataValue('tags') ? this.getDataValue('tags').split(',') : [];
+        },
+        set(tags) {
+            this.setDataValue('tags', tags.join(','));
+        },
+    },
 }, {
     timestamps: true,
 });
