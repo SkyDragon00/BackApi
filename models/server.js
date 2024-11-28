@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
-const { SNAPSHOT } = require('sequelize/lib/table-hints');
+// const { dbConnection } = require('../database/config.db');
+//const { SNAPSHOT } = require('sequelize/lib/table-hints');
 
 
 class Server {
@@ -13,7 +14,7 @@ class Server {
 
         this.port = process.env.PORT || 3000;
 
-        this.connectDB();
+        //this.connectDB();
 
 
         // Middlewares
