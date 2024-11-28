@@ -28,12 +28,22 @@ const Game = sequelize.define('Game', {
     },
     tags: {
         type: DataTypes.STRING,
-        allowNull: true, // Optional field
+        allowNull: true,
         get() {
             return this.getDataValue('tags') ? this.getDataValue('tags').split(',') : [];
         },
         set(tags) {
             this.setDataValue('tags', tags.join(','));
+        },
+    },
+    season: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        get() {
+            return this.getDataValue('season') ? this.getDataValue('season').split(',') : [];
+        },
+        set(season) {
+            this.setDataValue('season', season.join(','));
         },
     },
 }, {

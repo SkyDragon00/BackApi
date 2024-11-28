@@ -5,7 +5,8 @@ const { getAllGames, createGame, deleteGame } = require('../controllers/game.con
 
 
 const router = Router();
-const validTags = ['Action', 'Platform', 'Sandbox', 'Horror', 'Shooter', 'Halloween', 'Christmass', 'RPG', 'Adventure', 'Sports', 'Fighting', 'Rhythm'];
+const validTags = ['Action', 'Platform', 'Sandbox', 'Horror', 'Shooter', 'RPG', 'Adventure', 'Sports', 'Fighting', 'Rhythm'];
+const validSeasons = ['Halloween', 'Christmass', 'Valentine', 'Easter'];
 
 
 router.post('/add', [
@@ -14,6 +15,8 @@ router.post('/add', [
     check('price', 'Price must be a valid number').isNumeric(),
     check('tags').optional().isArray(),
     check('tags.*').optional().isIn(validTags),
+    check('season').optional().isArray(),
+    check('season.*').optional().isIn(validSeasons),
     validateCampus
 ], createGame);
 

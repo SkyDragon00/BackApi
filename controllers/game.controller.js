@@ -2,7 +2,7 @@ const { response } = require('express');
 const { Game } = require('../models/game');
 
 const createGame = async (req, res = response) => {
-    const { name, description, price, tags } = req.body;
+    const { name, description, price, tags, season } = req.body;
 
     try {
         const game = await Game.create({
@@ -10,6 +10,7 @@ const createGame = async (req, res = response) => {
             description,
             price,
             tags: tags || [],
+            season: season || []
         });
 
         res.status(201).json({
@@ -67,5 +68,5 @@ const deleteGame = async (req, res = response) => {
 module.exports = {
     createGame,
     getAllGames,
-    deleteGame, // Export the new controller
+    deleteGame,
 };
