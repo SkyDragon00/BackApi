@@ -40,7 +40,32 @@ const getAllGames = async (req, res = response) => {
     }
 };
 
+const deleteGame = async (req, res = response) => {
+    const { id } = req.params;
+
+    try {
+        const game = await Game.findByPk(id);
+
+        if (!game) {
+            return res.status(404).json({
+                message: 'Game not found',
+            });
+        }
+
+        await game.destroy(); // Delete the game
+        res.json({
+            message: `Game with ID ${id} deleted successfully`,
+        });
+    } catch (error) {
+        console.error('Error deleting game:', error);
+        res.status(500).json({
+            message: 'Internal server error',
+        });
+    }
+};
+
 module.exports = {
     createGame,
-    getAllGames, // Export the new controller
+    getAllGames,
+    deleteGame, // Export the new controller
 };

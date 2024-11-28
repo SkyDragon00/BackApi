@@ -1,7 +1,7 @@
 const { Router } = require('express');
 const { check } = require('express-validator');
 const { validateCampus } = require('../middlewares/checkcampus');
-const { getAllGames, createGame } = require('../controllers/game.controller');
+const { getAllGames, createGame, deleteGame } = require('../controllers/game.controller');
 
 
 const router = Router();
@@ -18,5 +18,7 @@ router.post('/add', [
 ], createGame);
 
 router.get('/all', getAllGames);
+
+router.delete('/:id', deleteGame);
 
 module.exports = router;
