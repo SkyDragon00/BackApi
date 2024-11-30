@@ -1,7 +1,7 @@
 const { Router } = require('express');
 const { check } = require('express-validator');
 const { validateCampus } = require('../middlewares/checkcampus');
-const { getAllGames, createGame, deleteGame } = require('../controllers/game.controller');
+const { getAllGames, createGame, deleteGame, getGamesByCurrentSeason } = require('../controllers/game.controller');
 const { makePurchase, getPurchases } = require('../controllers/purchase.controller');
 
 const router = Router();
@@ -31,5 +31,7 @@ router.post('/purchase', [
 ], makePurchase);
 
 router.get('/purchases/:userId', getPurchases);
+
+router.get('/season/current', getGamesByCurrentSeason);
 
 module.exports = router;

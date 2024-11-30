@@ -1,5 +1,7 @@
 const { response } = require('express');
 const { Game } = require('../models/game');
+const { Season } = require('../models/season');
+const { Op } = require('sequelize');
 
 const createGame = async (req, res = response) => {
     const { name, description, price, tags, season } = req.body;
@@ -23,10 +25,6 @@ const createGame = async (req, res = response) => {
             message: 'Internal server error',
         });
     }
-};
-
-module.exports = {
-    createGame,
 };
 
 const getAllGames = async (req, res = response) => {
@@ -65,8 +63,51 @@ const deleteGame = async (req, res = response) => {
     }
 };
 
+const getGamesByCurrentSeason = async (req, res) => {
+    try {
+        // Get the current date
+        const currentDate = new Date();
+
+        // Find the active season
+        const activeSeason = await Season.findOne({
+            where: {
+                startDate: { [Op.lte]: currentDate },
+                endDate: { [Op.gte]: currentDate },
+            },
+        });
+
+        let games;
+        if (activeSeason) {
+            // Fetch games matching the active season
+            games = await Game.findAll({
+                where: {
+                    season: { [Op.like]: `%${activeSeason.name}%` }, // Match the active season's name
+                },
+            });
+        } else {
+            // Fetch "Unseasoned" games if no active season is found
+            games = await Game.findAll({
+                where: {
+                    season: { [Op.like]: `%Unseasoned%` },
+                },
+            });
+        }
+
+        res.status(200).json({
+            season: activeSeason ? activeSeason.name : 'Unseasoned',
+            games,
+        });
+    } catch (error) {
+        console.error('Error fetching games by current season:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+
+// Export all functions in a single object
 module.exports = {
     createGame,
     getAllGames,
     deleteGame,
+    getGamesByCurrentSeason,
 };
