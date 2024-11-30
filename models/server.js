@@ -9,6 +9,7 @@ class Server {
         this.user_path = '/api/users';
         this.auth_path = '/api/auth';
         this.game_path = '/api/game';
+        this.recommendation_path = '/api/recommendations';
 
         this.app = express();
 
@@ -37,7 +38,8 @@ class Server {
     routes() {
         this.app.use(this.user_path, require('../routes/user.routes'));
         this.app.use(this.auth_path, require('../routes/auth.routes'));
-        this.app.use(this.game_path, require('../routes/game.routes')); // Registrar las rutas de juegos
+        this.app.use(this.game_path, require('../routes/game.routes'));
+        this.app.use(this.recommendation_path, require('../routes/recommendation.routes'));
     }
 
     listen() {
@@ -45,6 +47,7 @@ class Server {
             console.log('Server running on port', this.port);
         });
     }
+    
 }
 
 module.exports = Server;

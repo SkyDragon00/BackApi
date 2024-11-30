@@ -1,6 +1,6 @@
 const { Sequelize, DataTypes } = require('sequelize');
-const path = require('path');
 const { sequelize } = require('./game'); // Reuse existing sequelize instance
+const { Game } = require('./game');
 
 const Purchase = sequelize.define('Purchase', {
     id: {
@@ -23,6 +23,10 @@ const Purchase = sequelize.define('Purchase', {
 }, {
     timestamps: true,
 });
+
+// Define associations
+Purchase.belongsTo(Game, { foreignKey: 'gameId' });
+Game.hasMany(Purchase, { foreignKey: 'gameId' });
 
 sequelize.sync({ force: false }).then(() => {
     console.log('Purchase table synchronized');
