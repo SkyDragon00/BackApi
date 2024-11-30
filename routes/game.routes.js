@@ -6,7 +6,7 @@ const { makePurchase, getPurchases } = require('../controllers/purchase.controll
 
 const router = Router();
 const validTags = ['Action', 'Platform', 'Sandbox', 'Horror', 'Shooter', 'RPG', 'Adventure', 'Sports', 'Fighting', 'Rhythm'];
-const validSeasons = ['Halloween', 'Christmass', 'Valentine', 'Easter'];
+const validSeasons = ['Halloween', 'Christmass', 'Valentine', 'Easter', 'Unseasoned'];
 
 router.post('/add', [
     check('name', 'Name is required').not().isEmpty(),
