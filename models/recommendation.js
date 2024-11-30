@@ -1,5 +1,6 @@
 const { Sequelize, DataTypes } = require('sequelize');
 const { sequelize } = require('./game'); // Reuse the existing Sequelize instance
+const { Game } = require('./game');
 
 const Recommendation = sequelize.define('Recommendation', {
     id: {
@@ -30,6 +31,10 @@ const Recommendation = sequelize.define('Recommendation', {
 }, {
     timestamps: true,
 });
+
+Recommendation.belongsTo(Game, { foreignKey: 'gameId', onDelete: 'CASCADE' });
+Game.hasMany(Recommendation, { foreignKey: 'gameId', onDelete: 'CASCADE' });
+
 
 sequelize.sync({ force: false }).then(() => {
     console.log('Recommendations table synchronized');

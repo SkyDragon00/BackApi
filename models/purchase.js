@@ -25,8 +25,9 @@ const Purchase = sequelize.define('Purchase', {
 });
 
 // Define associations
-Purchase.belongsTo(Game, { foreignKey: 'gameId' });
-Game.hasMany(Purchase, { foreignKey: 'gameId' });
+Purchase.belongsTo(Game, { foreignKey: 'gameId', onDelete: 'CASCADE' });
+Game.hasMany(Purchase, { foreignKey: 'gameId', onDelete: 'CASCADE' });
+
 
 sequelize.sync({ force: false }).then(() => {
     console.log('Purchase table synchronized');

@@ -22,18 +22,28 @@ const generateRecommendations = async (req, res) => {
             season.forEach(seasonTag => ownedSeasons.add(seasonTag));
         });
 
-        // Fetch games matching tags or seasons but not already owned
         const ownedGameIds = purchases.map(p => p.gameId);
+
+        // Convert tags and seasons to arrays
+        const tagsArray = Array.from(ownedTags);
+        const seasonsArray = Array.from(ownedSeasons);
+
+        // Build dynamic conditions for tags and seasons
+        const tagConditions = tagsArray.map(tag => ({
+            tags: { [Op.like]: `%${tag}%` },
+        }));
+
+        const seasonConditions = seasonsArray.map(season => ({
+            season: { [Op.like]: `%${season}%` },
+        }));
+
+        // Fetch games matching tags or seasons but not already owned
         const recommendedGames = await Game.findAll({
             where: {
                 id: { [Op.notIn]: ownedGameIds },
-                [Op.or]: [
-                    { tags: { [Op.like]: `%${Array.from(ownedTags).join('%')}%` } },
-                    { season: { [Op.like]: `%${Array.from(ownedSeasons).join('%')}%` } }
-                ],
+                [Op.or]: [...tagConditions, ...seasonConditions],
             },
         });
-        
 
         // Store recommendations in the database
         const recommendations = recommendedGames.map(game => ({
@@ -51,7 +61,6 @@ const generateRecommendations = async (req, res) => {
     }
 };
 
-
 const getRecommendations = async (req, res) => {
     const { userId } = req.params;
 
@@ -68,6 +77,5 @@ const getRecommendations = async (req, res) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 };
-
 
 module.exports = { generateRecommendations, getRecommendations };

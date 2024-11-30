@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+
 // const { dbConnection } = require('../database/config.db');
 //const { SNAPSHOT } = require('sequelize/lib/table-hints');
 
@@ -10,6 +11,7 @@ class Server {
         this.auth_path = '/api/auth';
         this.game_path = '/api/game';
         this.recommendation_path = '/api/recommendations';
+        this.season_path = '/api/seasons';
 
         this.app = express();
 
@@ -40,6 +42,7 @@ class Server {
         this.app.use(this.auth_path, require('../routes/auth.routes'));
         this.app.use(this.game_path, require('../routes/game.routes'));
         this.app.use(this.recommendation_path, require('../routes/recommendation.routes'));
+        this.app.use(this.season_path, require('../routes/season.routes'));
     }
 
     listen() {
