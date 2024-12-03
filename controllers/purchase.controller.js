@@ -46,7 +46,51 @@ const getPurchases = async (req, res = response) => {
     }
 };
 
+const { sequelize } = require('../models/game'); // Use the existing Sequelize instance
+
+const getDateReport = async (req, res) => {
+    const { startDate, endDate } = req.query;
+
+    console.log('startDate:', startDate);
+    console.log('endDate:', endDate);
+
+    try {
+        // Validate date inputs
+        if (!startDate || !endDate) {
+            return res.status(400).json({ message: 'Start date and end date are required.' });
+        }
+
+        // Query to get user purchase statistics within the date range
+        const result = await sequelize.query(
+            `
+            SELECT 
+                Users.id AS userId,
+                Users.name AS userName,
+                COUNT(Purchases.id) AS totalGamesBought,
+                SUM(Games.price) AS totalAmountSpent
+            FROM Purchases
+            INNER JOIN Users ON Purchases.userId = Users.id
+            INNER JOIN Games ON Purchases.gameId = Games.id
+            WHERE Purchases.purchaseDate BETWEEN :startDate AND :endDate
+            GROUP BY Users.id
+            ORDER BY totalGamesBought DESC, totalAmountSpent DESC
+            LIMIT 10;
+            `,
+            {
+                type: sequelize.QueryTypes.SELECT,
+                replacements: { startDate, endDate },
+            }
+        );
+
+        res.status(200).json(result);
+    } catch (error) {
+        console.error('Error fetching date report:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
 module.exports = {
     makePurchase,
     getPurchases,
+    getDateReport,
 };

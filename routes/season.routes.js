@@ -28,4 +28,6 @@ router.delete('/:id', [
     validateCampus,
 ], deleteSeason);
 
+router.get('/current', getSeasons);
+
 module.exports = router;

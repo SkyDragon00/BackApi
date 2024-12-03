@@ -67,6 +67,7 @@ const getGamesByCurrentSeason = async (req, res) => {
     try {
         // Get the current date
         const currentDate = new Date();
+        //console.log("drfgtyhyuhuh" + currentDate.toString());
 
         // Find the active season
         const activeSeason = await Season.findOne({
