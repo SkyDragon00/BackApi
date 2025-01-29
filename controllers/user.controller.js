@@ -1,8 +1,14 @@
+// const { response, request } = require('express');
+// const bcryptjs = require('bcryptjs');
+// const { User } = require('../models/user');
+// const { Role } = require('../models/role');
+// const { validationResult } = require('express-validator');
+
 const { response, request } = require('express');
-const bcryptjs = require('bcryptjs');
-const { User } = require('../models/user');
-const { Role } = require('../models/role');
 const { validationResult } = require('express-validator');
+const { User } = require('../models/user');
+const { validateEmail, validateRole } = require('../strategies/validation.strategy');
+const { encryptPassword } = require('../strategies/encryption.strategy');
 
 const usuariosGet = async (req = request, res = response) => {
     const { limit = 5, desde = 0 } = req.query;
@@ -27,48 +33,34 @@ const usuariosGet = async (req = request, res = response) => {
 };
 
 const usuariosPost = async (req, res = response) => {
-    const err = validationResult(req);
-    if (!err.isEmpty()) {
-        return res.status(400).json(err);
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json(errors);
     }
 
     const { name, email, password, role } = req.body;
 
-    // Check if email exists
-    const emailExists = await User.findOne({ where: { email } });
-    if (emailExists) {
-        return res.status(400).json({
-            message: 'Email already exists'
-        });
-    }
-
-    // Check if role exists in the Role table
-    const roleExists = await Role.findOne({ where: { role } });
-    if (!roleExists) {
-        return res.status(400).json({
-            message: `Role ${role} does not exist`
-        });
-    }
-
-    // Encrypt password
-    const salt = bcryptjs.genSaltSync();
-    const hashedPassword = bcryptjs.hashSync(password, salt);
-
     try {
-        // Create the user, linking it with the roleId
+        // Validaciones con estrategias
+        await validateEmail(email);
+        const roleId = await validateRole(role);
+
+        // Encriptar contraseña usando estrategia
+        const hashedPassword = encryptPassword(password);
+
+        // Crear usuario
         const user = await User.create({
             name,
             email,
             password: hashedPassword,
-            roleId: roleExists.id  // Asignar el roleId del rol encontrado
+            roleId
         });
-        
-        // Return the newly created user
+
         res.status(201).json({
             name: user.name,
             email: user.email,
             id: user.id,
-            role: roleExists.role
+            role
         });
     } catch (error) {
         console.error('Error creating user:', error);

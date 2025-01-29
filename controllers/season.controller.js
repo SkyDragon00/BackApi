@@ -1,11 +1,14 @@
 const { Season } = require('../models/season');
+const SeasonFactory = require('../factories/season.factory');
 
 // Create a new season
 const createSeason = async (req, res) => {
     const { name, startDate, endDate } = req.body;
 
     try {
-        const season = await Season.create({ name, startDate, endDate });
+        // Usar el factory para crear una instancia
+        const season = SeasonFactory.create({ name, startDate, endDate });
+        await season.save(); // Guardar en la base de datos
         res.status(201).json({ message: 'Season created successfully', season });
     } catch (error) {
         console.error('Error creating season:', error);
